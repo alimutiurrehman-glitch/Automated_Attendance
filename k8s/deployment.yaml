@@ -1,0 +1,46 @@
+# =============================================
+# Kubernetes Deployment — Attendance API Backend
+# =============================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: attendance-api
+  labels:
+    app: attendance-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: attendance-api
+  template:
+    metadata:
+      labels:
+        app: attendance-api
+    spec:
+      containers:
+        - name: attendance-api
+          # IMPORTANT: Replace <YOUR_DOCKERHUB_USERNAME> with your Docker Hub username
+          image: <YOUR_DOCKERHUB_USERNAME>/attendance-api:v1
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5

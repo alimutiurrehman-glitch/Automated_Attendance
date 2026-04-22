@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Automated Classroom Attendance System — Admin Dashboard for monitoring API health, endpoints, and attendance statistics.">
+    <title>Attendance System — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+            </div>
+            <span class="brand-text">Attendance<span class="brand-accent">API</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#status" class="nav-link active">Status</a>
+            <a href="#endpoints" class="nav-link">Endpoints</a>
+            <a href="#test" class="nav-link">Test API</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-badge">
+                <span class="badge-dot"></span>
+                DevOps Cloud Deployment
+            </div>
+            <h1 class="hero-title">
+                Automated Classroom
+                <span class="gradient-text">Attendance System</span>
+            </h1>
+            <p class="hero-subtitle">
+                AI-powered face recognition backend for real-time classroom attendance marking.
+                Built with FastAPI, InsightFace & Firebase.
+            </p>
+            <div class="hero-actions">
+                <a href="/docs" class="btn btn-primary" id="btn-docs">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    API Docs
+                </a>
+                <a href="#test" class="btn btn-secondary" id="btn-try">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    Try It Out
+                </a>
+            </div>
+        </section>
+
+        <!-- Status Cards -->
+        <section class="section" id="status">
+            <h2 class="section-title">System Status</h2>
+            <div class="status-grid">
+                <div class="card status-card" id="card-api">
+                    <div class="card-icon api-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>API Server</h3>
+                        <p class="status-text" id="api-status">Checking...</p>
+                        <span class="status-badge loading" id="api-badge">●  Connecting</span>
+                    </div>
+                </div>
+
+                <div class="card status-card" id="card-version">
+                    <div class="card-icon version-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>Version</h3>
+                        <p class="status-text" id="api-version">—</p>
+                        <span class="status-badge info">Build Info</span>
+                    </div>
+                </div>
+
+                <div class="card status-card" id="card-model">
+                    <div class="card-icon model-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>AI Model</h3>
+                        <p class="status-text">InsightFace</p>
+                        <span class="status-badge info">buffalo_l / ArcFace</span>
+                    </div>
+                </div>
+
+                <div class="card status-card" id="card-uptime">
+                    <div class="card-icon uptime-icon">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    </div>
+                    <div class="card-content">
+                        <h3>Response Time</h3>
+                        <p class="status-text" id="response-time">—</p>
+                        <span class="status-badge info">Latency</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- API Endpoints -->
+        <section class="section" id="endpoints">
+            <h2 class="section-title">API Endpoints</h2>
+            <div class="endpoints-list">
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code class="endpoint-path">/health</code>
+                    </div>
+                    <p class="endpoint-desc">Health check — returns server status</p>
+                </div>
+
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code class="endpoint-path">/</code>
+                    </div>
+                    <p class="endpoint-desc">Root endpoint — API information and available routes</p>
+                </div>
+
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code class="endpoint-path">/api/attendance/process</code>
+                    </div>
+                    <p class="endpoint-desc">Process a classroom group photo for attendance marking via face detection and recognition</p>
+                    <div class="endpoint-params">
+                        <span class="param">image: File</span>
+                        <span class="param">class_id: string</span>
+                        <span class="param">enrolled_students: JSON</span>
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method post">POST</span>
+                        <code class="endpoint-path">/api/enrollment/generate-embedding</code>
+                    </div>
+                    <p class="endpoint-desc">Generate a 512-d face embedding vector from a single student face image for enrollment</p>
+                    <div class="endpoint-params">
+                        <span class="param">image: File</span>
+                    </div>
+                </div>
+
+                <div class="endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="method get">GET</span>
+                        <code class="endpoint-path">/docs</code>
+                    </div>
+                    <p class="endpoint-desc">Interactive Swagger UI — auto-generated API documentation</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Test API Section -->
+        <section class="section" id="test">
+            <h2 class="section-title">Quick API Test</h2>
+            <div class="test-grid">
+                <div class="card test-card">
+                    <h3>Health Check</h3>
+                    <p>Verify the API server is running and responsive.</p>
+                    <button class="btn btn-primary btn-sm" id="btn-health-check" onclick="testHealth()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        Run Health Check
+                    </button>
+                    <pre class="response-box" id="health-response"></pre>
+                </div>
+
+                <div class="card test-card">
+                    <h3>API Info</h3>
+                    <p>Fetch root endpoint metadata and available routes.</p>
+                    <button class="btn btn-primary btn-sm" id="btn-api-info" onclick="testRoot()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                        Fetch Info
+                    </button>
+                    <pre class="response-box" id="root-response"></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Architecture Section -->
+        <section class="section" id="architecture">
+            <h2 class="section-title">System Architecture</h2>
+            <div class="arch-container">
+                <div class="arch-flow">
+                    <div class="arch-node node-app">
+                        <div class="node-icon">📱</div>
+                        <div class="node-label">Flutter App</div>
+                        <div class="node-sub">Android Client</div>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-node node-api">
+                        <div class="node-icon">⚡</div>
+                        <div class="node-label">FastAPI</div>
+                        <div class="node-sub">Python Backend</div>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-node node-ai">
+                        <div class="node-icon">🧠</div>
+                        <div class="node-label">InsightFace</div>
+                        <div class="node-sub">Face Recognition</div>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-node node-db">
+                        <div class="node-icon">🔥</div>
+                        <div class="node-label">Firebase</div>
+                        <div class="node-sub">Auth + Firestore</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Deployment Info -->
+        <section class="section" id="deployment">
+            <h2 class="section-title">Deployment Pipeline</h2>
+            <div class="deploy-steps">
+                <div class="deploy-step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Dockerize</h3>
+                        <p>Build container image with Python runtime, dependencies, and AI models</p>
+                    </div>
+                </div>
+                <div class="deploy-connector"></div>
+                <div class="deploy-step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Push to Docker Hub</h3>
+                        <p>Publish the image to Docker Hub container registry</p>
+                    </div>
+                </div>
+                <div class="deploy-connector"></div>
+                <div class="deploy-step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Deploy to AKS</h3>
+                        <p>Deploy on Azure Kubernetes Service with public LoadBalancer</p>
+                    </div>
+                </div>
+                <div class="deploy-connector"></div>
+                <div class="deploy-step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Live on Cloud</h3>
+                        <p>Application accessible via public IP address on Azure</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>Automated Classroom Attendance System — CSC418 DevOps Project</p>
+            <p class="footer-sub">Built with FastAPI · InsightFace · Firebase · Docker · Azure AKS</p>
+        </div>
+    </footer>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

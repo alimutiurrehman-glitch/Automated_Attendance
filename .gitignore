@@ -1,0 +1,49 @@
+# =============================================
+# .gitignore — Automated Attendance System
+# =============================================
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+venv/
+env/
+.venv/
+
+# === Flutter / Dart ===
+attendance_app/.dart_tool/
+attendance_app/build/
+attendance_app/.flutter-plugins
+attendance_app/.packages
+attendance_app/.pub-cache/
+attendance_app/.pub/
+
+# === IDE ===
+.vscode/
+.idea/
+*.swp
+*.swo
+*.iml
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Environment / Secrets ===
+.env
+*.key
+*.pem
+serviceAccountKey.json
+firebase-adminsdk*.json
+
+# === Docker ===
+# (Don't ignore Dockerfile — it needs to be in the repo)
+
+# === Misc ===
+*.log
+node_modules/
