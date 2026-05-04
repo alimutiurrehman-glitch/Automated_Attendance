@@ -6,7 +6,7 @@ metadata:
   labels:
     app: attendance-api
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: attendance-api
@@ -18,7 +18,8 @@ spec:
       containers:
         - name: attendance-api
           
-          image: alimutiurrehman/attendance-api:v1
+          image: alimutiurrehman/attendance-api:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           resources:
