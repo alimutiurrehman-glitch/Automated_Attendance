@@ -20,9 +20,13 @@ MIN_FACE_SIZE = 20
 # InsightFace model name
 INSIGHTFACE_MODEL = "buffalo_l"
 
-# Firebase Admin SDK service account path
-# Set to None if not using Firebase Admin from backend
-FIREBASE_CREDENTIALS_PATH = None
+import os
+
+# Firebase credentials — supports two modes:
+# 1. FIREBASE_CREDENTIALS_JSON env var: full JSON string (used on Railway / cloud)
+# 2. Local file path fallback (used in local development)
+FIREBASE_CREDENTIALS_JSON_ENV = os.environ.get("FIREBASE_CREDENTIALS_JSON")
+FIREBASE_CREDENTIALS_PATH = os.path.join(os.path.dirname(__file__), "firebase-credentials.json")
 
 # Server settings
 HOST = "0.0.0.0"
