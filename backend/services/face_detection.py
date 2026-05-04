@@ -21,7 +21,8 @@ def get_face_app() -> FaceAnalysis:
             name=INSIGHTFACE_MODEL,
             providers=["CPUExecutionProvider"],
         )
-        _face_app.prepare(ctx_id=-1, det_size=(640, 640))
+        # Increase det_size to 1280x1280 to help find smaller faces in the back rows
+        _face_app.prepare(ctx_id=-1, det_size=(1280, 1280))
     return _face_app
 
 

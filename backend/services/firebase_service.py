@@ -50,15 +50,28 @@ def get_all_classes():
 def register_student_in_db(name, roll_number, class_id, face_embedding):
     """
     Registers a student in Firestore:
-    1. Creates a document in the 'students' collection.
-    2. Updates the 'studentIds' array in the corresponding 'class' document.
+    1. Checks for duplicate roll number within the same class.
+    2. Creates a document in the 'students' collection.
+    3. Updates the 'studentIds' array in the corresponding 'class' document.
     """
     db = get_db()
     try:
+        # Normalize roll number to uppercase for case-insensitive duplicate check and storage
+        normalized_roll = roll_number.strip().upper()
+
+        # Duplicate check: reject if same roll number already exists in this class
+        existing = db.collection('students') \
+            .where('rollNumber', '==', normalized_roll) \
+            .where('classId', '==', class_id) \
+            .limit(1) \
+            .stream()
+        if any(True for _ in existing):
+            raise ValueError(f"A student with roll number '{normalized_roll}' is already registered in this class.")
+
         # Create student document
         student_data = {
             "name": name,
-            "rollNumber": roll_number,
+            "rollNumber": normalized_roll,
             "classId": class_id,
             "faceEmbeddings": [json.dumps(face_embedding)], # Stored as JSON strings to bypass Firestore nested array limitation
             "enrollmentImages": [], # Will be empty since we're using web upload for now
@@ -78,5 +91,7 @@ def register_student_in_db(name, roll_number, class_id, face_embedding):
         
         return student_id
         
+    except ValueError:
+        raise  # Re-raise duplicate error as-is so the route returns a 400
     except Exception as e:
         raise Exception(f"Failed to register student in DB: {e}")

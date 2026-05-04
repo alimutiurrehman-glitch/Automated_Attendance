@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class ApiService {
   // Change this to your backend server URL
-  static const String baseUrl = 'http://10.0.2.2:8000'; // Android emulator localhost
+  static const String baseUrl = 'http://172.188.248.41'; // AKS LoadBalancer IP
 
   /// Process a classroom image for attendance
   /// Sends image + class_id to the Python backend

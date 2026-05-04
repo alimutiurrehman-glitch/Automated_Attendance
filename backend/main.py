@@ -59,6 +59,12 @@ async def root():
     return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
 
 
+@app.get("/register")
+async def register_page():
+    """Serve the student self-registration page."""
+    return FileResponse(os.path.join(FRONTEND_DIR, "register.html"))
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host=HOST, port=PORT, reload=True)

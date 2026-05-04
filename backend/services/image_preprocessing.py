@@ -149,14 +149,14 @@ def assess_image_quality(image: np.ndarray) -> dict:
     
     return {
         "brightness": float(mean_brightness),
-        "brightness_ok": brightness_ok,
+        "brightness_ok": bool(brightness_ok),
         "contrast": float(contrast),
-        "contrast_ok": contrast_ok,
+        "contrast_ok": bool(contrast_ok),
         "blur_score": float(laplacian_var),
-        "blur_ok": blur_ok,
+        "blur_ok": bool(blur_ok),
         "overall_quality": quality_map[quality_score],
-        "quality_score": quality_score,
-        "warnings": _generate_warnings(brightness_ok, contrast_ok, blur_ok, mean_brightness),
+        "quality_score": int(quality_score),
+        "warnings": _generate_warnings(bool(brightness_ok), bool(contrast_ok), bool(blur_ok), float(mean_brightness)),
     }
 
 

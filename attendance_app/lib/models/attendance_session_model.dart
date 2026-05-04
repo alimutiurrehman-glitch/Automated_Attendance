@@ -116,13 +116,20 @@ class AttendanceSessionModel {
   });
 
   factory AttendanceSessionModel.fromMap(Map<String, dynamic> map, String id) {
+    // Parse timestamp: may be a Firestore Timestamp (app) or ISO string
+    DateTime parsedTimestamp = DateTime.now();
+    final rawTimestamp = map['timestamp'];
+    if (rawTimestamp is Timestamp) {
+      parsedTimestamp = rawTimestamp.toDate();
+    } else if (rawTimestamp is String) {
+      parsedTimestamp = DateTime.tryParse(rawTimestamp) ?? DateTime.now();
+    }
+
     return AttendanceSessionModel(
       sessionId: id,
       classId: map['classId'] ?? '',
       instructorId: map['instructorId'] ?? '',
-      timestamp: map['timestamp'] != null
-          ? (map['timestamp'] as Timestamp).toDate()
-          : DateTime.now(),
+      timestamp: parsedTimestamp,
       sourceImageUrl: map['sourceImageUrl'],
       detectedFacesCount: map['detectedFacesCount'] ?? 0,
       recognizedStudents: (map['recognizedStudents'] as List<dynamic>?)

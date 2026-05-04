@@ -67,6 +67,41 @@ class _LoginScreenState extends State<LoginScreen>
                 builder: (_) => InstructorDashboard(user: user)),
           );
         }
+      } else if (mounted) {
+        throw Exception('User profile not found in Firestore Database! Please ensure you created the document in the "users" collection with your UID.');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e.toString()),
+            backgroundColor: AppTheme.errorColor,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _loginWithGoogle() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final user = await _authService.signInWithGoogle();
+
+      if (user != null && mounted) {
+        if (user.role == UserRole.admin) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (_) => AdminDashboard(user: user)),
+          );
+        } else {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+                builder: (_) => InstructorDashboard(user: user)),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
@@ -225,6 +260,33 @@ class _LoginScreenState extends State<LoginScreen>
                                           ),
                                         )
                                       : const Text('Sign In'),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                children: [
+                                  Expanded(child: Divider(color: Colors.grey.shade300)),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                                    child: Text('OR', style: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.bold)),
+                                  ),
+                                  Expanded(child: Divider(color: Colors.grey.shade300)),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              SizedBox(
+                                height: 50,
+                                child: OutlinedButton.icon(
+                                  onPressed: _isLoading ? null : _loginWithGoogle,
+                                  icon: const Icon(Icons.g_mobiledata, size: 28, color: Colors.blue),
+                                  label: const Text(
+                                    'Sign In with Google',
+                                    style: TextStyle(color: Colors.black87),
+                                  ),
+                                  style: OutlinedButton.styleFrom(
+                                    side: const BorderSide(color: Colors.black12),
+                                    backgroundColor: Colors.white,
+                                  ),
                                 ),
                               ),
                             ],

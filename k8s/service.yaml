@@ -1,7 +1,4 @@
-# =============================================
-# Kubernetes Service — Attendance API (LoadBalancer)
-# Exposes the app via a public IP on AKS
-# =============================================
+
 apiVersion: v1
 kind: Service
 metadata:

@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "17731431367",
+    "project_id": "dip-project-6db01",
+    "storage_bucket": "dip-project-6db01.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17731431367:android:bf1de5ebb9d48a00dac7e2",
+        "android_client_info": {
+          "package_name": "com.attendance.attendance_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "17731431367-hdr8q18369jigek73l5fqf1l0drelh29.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7938d0U8k3yXruVAm5QkBLLumJOT_f6E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17731431367-hdr8q18369jigek73l5fqf1l0drelh29.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17731431367:android:7a66085d39f08ddcdac7e2",
+        "android_client_info": {
+          "package_name": "com.company.attendance"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "17731431367-ecfj0ja8gkplc2rqeoma8kr4g324a9fk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.company.attendance",
+            "certificate_hash": "21c1dbc4ee4b9a0e751d430ef332cf12561f8275"
+          }
+        },
+        {
+          "client_id": "17731431367-hdr8q18369jigek73l5fqf1l0drelh29.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA7938d0U8k3yXruVAm5QkBLLumJOT_f6E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17731431367-hdr8q18369jigek73l5fqf1l0drelh29.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

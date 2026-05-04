@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class StudentModel {
@@ -23,20 +24,32 @@ class StudentModel {
     List<List<double>> embeddings = [];
     if (map['faceEmbeddings'] != null) {
       for (var embedding in map['faceEmbeddings']) {
-        embeddings.add(List<double>.from(embedding));
+        if (embedding is String) {
+          embeddings.add(List<double>.from(jsonDecode(embedding)));
+        } else if (embedding is List) {
+          embeddings.add(List<double>.from(embedding));
+        }
       }
+    }
+
+    // Parse createdAt: may be a Firestore Timestamp (app) or ISO string (web registration)
+    DateTime parsedCreatedAt = DateTime.now();
+    final rawCreatedAt = map['createdAt'];
+    if (rawCreatedAt is Timestamp) {
+      parsedCreatedAt = rawCreatedAt.toDate();
+    } else if (rawCreatedAt is String) {
+      parsedCreatedAt = DateTime.tryParse(rawCreatedAt) ?? DateTime.now();
     }
 
     return StudentModel(
       studentId: id,
-      fullName: map['fullName'] ?? '',
+      // 'name' is used by the web registration backend; 'fullName' by the Flutter app
+      fullName: map['fullName'] ?? map['name'] ?? '',
       rollNumber: map['rollNumber'] ?? '',
       classId: map['classId'] ?? '',
       enrollmentImages: List<String>.from(map['enrollmentImages'] ?? []),
       faceEmbeddings: embeddings,
-      createdAt: map['createdAt'] != null
-          ? (map['createdAt'] as Timestamp).toDate()
-          : DateTime.now(),
+      createdAt: parsedCreatedAt,
     );
   }
 
@@ -46,7 +59,7 @@ class StudentModel {
       'rollNumber': rollNumber,
       'classId': classId,
       'enrollmentImages': enrollmentImages,
-      'faceEmbeddings': faceEmbeddings,
+      'faceEmbeddings': faceEmbeddings.map((e) => jsonEncode(e)).toList(),
       'createdAt': Timestamp.fromDate(createdAt),
     };
   }

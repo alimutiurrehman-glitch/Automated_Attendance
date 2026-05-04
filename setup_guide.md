@@ -111,7 +111,7 @@ This will automatically generate the `lib/firebase_options.dart` file and config
 
 ### 4. Connect Frontend to your Backend
 Make sure the frontend is configured to send HTTP requests to your local backend. 
-- If running on an **Android Emulator**, the localhost IP is typically `http://10.0.2.2:8000`.
+- If running on an **Android Emulator**, the localhost IP is typically `http://10.0.2.2:8000`.clear
 - If running on a **Physical Device**, ensure both your device and computer are on the same Wi-Fi network and use your computer's local IP address (e.g., `http://192.168.1.x:8000`).
 
 *(Update the base URL in your application's API service class accordingly).*

@@ -5,14 +5,16 @@ All thresholds and settings are configurable here.
 
 # Recognition confidence threshold (0.0 to 1.0)
 # Faces below this threshold are marked as "unresolved" for manual review
-RECOGNITION_THRESHOLD = 0.45
+# 0.40 maps to ~70% confidence in the app
+RECOGNITION_THRESHOLD = 0.40
 
 # Low-confidence zone: between this and RECOGNITION_THRESHOLD,
 # matches are flagged for instructor review
-LOW_CONFIDENCE_THRESHOLD = 0.35
+# 0.30 maps to ~65% confidence
+LOW_CONFIDENCE_THRESHOLD = 0.30
 
 # Maximum image dimension for processing (for performance)
-MAX_IMAGE_DIMENSION = 1920
+MAX_IMAGE_DIMENSION = 2560
 
 # Face detection minimum size (pixels)
 MIN_FACE_SIZE = 20

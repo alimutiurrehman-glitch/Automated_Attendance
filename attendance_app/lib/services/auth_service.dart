@@ -1,10 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   User? get currentUser => _auth.currentUser;
 
@@ -24,6 +26,49 @@ class AuthService {
       return null;
     } on FirebaseAuthException catch (e) {
       throw _handleAuthException(e);
+    }
+  }
+
+  /// Sign in with Google
+  Future<UserModel?> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return null; // User canceled the sign-in
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final UserCredential userCredential = await _auth.signInWithCredential(credential);
+      final User? firebaseUser = userCredential.user;
+
+      if (firebaseUser != null) {
+        UserModel? userProfile = await getUserProfile(firebaseUser.uid);
+        
+        // If it's a first time Google Sign-In, automatically create an Instructor profile
+        if (userProfile == null) {
+          userProfile = UserModel(
+            userId: firebaseUser.uid,
+            name: firebaseUser.displayName ?? 'Google User',
+            email: firebaseUser.email ?? '',
+            role: UserRole.instructor,
+          );
+          
+          await _firestore
+              .collection('users')
+              .doc(firebaseUser.uid)
+              .set(userProfile.toMap());
+        }
+        return userProfile;
+      }
+      return null;
+    } on FirebaseAuthException catch (e) {
+      throw _handleAuthException(e);
+    } catch (e) {
+      throw Exception('Google Sign-In failed: $e');
     }
   }
 

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/class_model.dart';
 import '../models/student_model.dart';
@@ -68,9 +69,13 @@ class FirestoreService {
         .where('classId', isEqualTo: classId)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => StudentModel.fromMap(doc.data(), doc.id))
-          .toList();
+      try {
+        return snapshot.docs
+            .map((doc) => StudentModel.fromMap(doc.data(), doc.id))
+            .toList();
+      } catch (e) {
+        throw Exception("Error parsing student data: $e");
+      }
     });
   }
 
@@ -103,7 +108,7 @@ class FirestoreService {
   Future<void> updateStudentEmbeddings(
       String studentId, List<List<double>> embeddings) async {
     await _firestore.collection('students').doc(studentId).update({
-      'faceEmbeddings': embeddings,
+      'faceEmbeddings': embeddings.map((e) => jsonEncode(e)).toList(),
     });
   }
 
@@ -160,9 +165,13 @@ class FirestoreService {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => AttendanceSessionModel.fromMap(doc.data(), doc.id))
-          .toList();
+      try {
+        return snapshot.docs
+            .map((doc) => AttendanceSessionModel.fromMap(doc.data(), doc.id))
+            .toList();
+      } catch (e) {
+        throw Exception("Error parsing attendance session: $e");
+      }
     });
   }
 
