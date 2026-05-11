@@ -71,7 +71,7 @@ async def process_attendance_image(
             )
         
         # Run matching engine
-        results = match_faces(detected, students_data)
+        results = match_faces(detected, students_data, cv_image)
         results["image_quality"] = quality
         
         return results

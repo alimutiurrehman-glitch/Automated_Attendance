@@ -65,6 +65,12 @@ async def register_page():
     return FileResponse(os.path.join(FRONTEND_DIR, "register.html"))
 
 
+@app.get("/admin-enroll")
+async def admin_enroll_page():
+    """Serve the admin face enrollment page."""
+    return FileResponse(os.path.join(FRONTEND_DIR, "admin_enroll.html"))
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host=HOST, port=PORT, reload=True)

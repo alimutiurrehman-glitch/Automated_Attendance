@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import '../../models/attendance_session_model.dart';
 import '../../models/class_model.dart';
@@ -30,6 +31,7 @@ class _AttendanceReviewScreenState extends State<AttendanceReviewScreen>
   // Mutable attendance state
   late Set<String> _presentStudentIds;
   late List<ManualEdit> _manualEdits;
+  final Map<String, List<List<double>>> _newEmbeddingsToLearn = {};
   bool _isSaving = false;
 
   @override
@@ -126,6 +128,19 @@ class _AttendanceReviewScreenState extends State<AttendanceReviewScreen>
         absentStudents: _absentStudents.map((s) => s.studentId).toList(),
         manualEdits: _manualEdits,
       );
+
+      // Learn from past mistakes: update student embeddings for accepted matches
+      for (final entry in _newEmbeddingsToLearn.entries) {
+        final studentId = entry.key;
+        final newEmbeddings = entry.value;
+        try {
+          final student = widget.allStudents.firstWhere((s) => s.studentId == studentId);
+          final updatedEmbeddings = [...student.faceEmbeddings, ...newEmbeddings];
+          await _firestoreService.updateStudentEmbeddings(studentId, updatedEmbeddings);
+        } catch (e) {
+          debugPrint('Error updating student embeddings for learning: $e');
+        }
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -370,13 +385,21 @@ class _AttendanceReviewScreenState extends State<AttendanceReviewScreen>
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(10),
+                      width: 48,
+                      height: 48,
                       decoration: BoxDecoration(
                         color: AppTheme.warningColor.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
+                        image: face.faceImageUrl != null && face.faceImageUrl!.contains(',')
+                            ? DecorationImage(
+                                image: MemoryImage(base64Decode(face.faceImageUrl!.split(',').last)),
+                                fit: BoxFit.cover,
+                              )
+                            : null,
                       ),
-                      child: const Icon(Icons.help,
-                          color: AppTheme.warningColor),
+                      child: face.faceImageUrl == null || !face.faceImageUrl!.contains(',')
+                          ? const Icon(Icons.help, color: AppTheme.warningColor)
+                          : null,
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -410,6 +433,13 @@ class _AttendanceReviewScreenState extends State<AttendanceReviewScreen>
                           onPressed: () {
                             _toggleAttendance(
                                 face.bestMatchStudentId!, true);
+                                
+                            // Save embedding to learn from mistake
+                            if (face.embedding != null) {
+                              _newEmbeddingsToLearn.putIfAbsent(face.bestMatchStudentId!, () => []);
+                              _newEmbeddingsToLearn[face.bestMatchStudentId!]!.add(face.embedding!);
+                            }
+
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(
                               const SnackBar(

@@ -57,12 +57,14 @@ class UnresolvedFace {
   final double? bestMatchConfidence;
   final String? bestMatchStudentId;
   final String? faceImageUrl;
+  final List<double>? embedding;
 
   UnresolvedFace({
     required this.faceIndex,
     this.bestMatchConfidence,
     this.bestMatchStudentId,
     this.faceImageUrl,
+    this.embedding,
   });
 
   factory UnresolvedFace.fromMap(Map<String, dynamic> map) {
@@ -71,6 +73,7 @@ class UnresolvedFace {
       bestMatchConfidence: map['bestMatchConfidence']?.toDouble(),
       bestMatchStudentId: map['bestMatchStudentId'],
       faceImageUrl: map['faceImageUrl'],
+      embedding: (map['embedding'] as List<dynamic>?)?.map((e) => (e as num).toDouble()).toList(),
     );
   }
 
@@ -82,6 +85,7 @@ class UnresolvedFace {
       if (bestMatchStudentId != null)
         'bestMatchStudentId': bestMatchStudentId,
       if (faceImageUrl != null) 'faceImageUrl': faceImageUrl,
+      if (embedding != null) 'embedding': embedding,
     };
   }
 }

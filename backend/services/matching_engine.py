@@ -7,6 +7,8 @@ Handles:
 """
 
 import numpy as np
+import cv2
+import base64
 from typing import Any
 from services.face_recognition import cosine_similarity, normalize_similarity
 from config import RECOGNITION_THRESHOLD, LOW_CONFIDENCE_THRESHOLD
@@ -15,6 +17,7 @@ from config import RECOGNITION_THRESHOLD, LOW_CONFIDENCE_THRESHOLD
 def match_faces(
     detected_faces: list,
     enrolled_students: list[dict],
+    cv_image: np.ndarray = None,
 ) -> dict:
     """
     Match detected faces against enrolled students.
@@ -29,14 +32,20 @@ def match_faces(
     Returns:
         Dictionary with:
         - recognized: list of {student_id, full_name, confidence, face_index}
-        - unresolved: list of {face_index, best_match_confidence, best_match_student_id}
+        - unresolved: list of {faceIndex, bestMatchConfidence, bestMatchStudentId, faceImageUrl, embedding}
         - detected_faces_count: int
     """
     if not detected_faces or not enrolled_students:
         return {
             "recognized": [],
             "unresolved": [
-                {"faceIndex": i, "bestMatchConfidence": None, "bestMatchStudentId": None}
+                {
+                    "faceIndex": i, 
+                    "bestMatchConfidence": None, 
+                    "bestMatchStudentId": None,
+                    "faceImageUrl": None,
+                    "embedding": detected_faces[i].embedding.tolist() if detected_faces and hasattr(detected_faces[i], 'embedding') else None
+                }
                 for i in range(len(detected_faces))
             ],
             "detected_faces_count": len(detected_faces),
@@ -90,19 +99,37 @@ def match_faces(
         
         elif best_similarity >= LOW_CONFIDENCE_THRESHOLD and best_student_id is not None:
             # Low-confidence: flag for manual review
-            unresolved.append({
+            unresolved_item = {
                 "faceIndex": face_idx,
                 "bestMatchConfidence": round(confidence, 4),
                 "bestMatchStudentId": best_student_id,
-            })
+                "embedding": detected_embedding.tolist()
+            }
+            if cv_image is not None and hasattr(face, 'bbox'):
+                bbox = face.bbox.astype(int)
+                x1, y1, x2, y2 = max(0, bbox[0]), max(0, bbox[1]), min(cv_image.shape[1], bbox[2]), min(cv_image.shape[0], bbox[3])
+                face_crop = cv_image[y1:y2, x1:x2]
+                if face_crop.size > 0:
+                    _, buffer = cv2.imencode('.jpg', face_crop)
+                    unresolved_item["faceImageUrl"] = f"data:image/jpeg;base64,{base64.b64encode(buffer).decode('utf-8')}"
+            unresolved.append(unresolved_item)
         
         else:
             # No match at all
-            unresolved.append({
+            unresolved_item = {
                 "faceIndex": face_idx,
                 "bestMatchConfidence": round(confidence, 4) if best_student_id else None,
                 "bestMatchStudentId": best_student_id,
-            })
+                "embedding": detected_embedding.tolist()
+            }
+            if cv_image is not None and hasattr(face, 'bbox'):
+                bbox = face.bbox.astype(int)
+                x1, y1, x2, y2 = max(0, bbox[0]), max(0, bbox[1]), min(cv_image.shape[1], bbox[2]), min(cv_image.shape[0], bbox[3])
+                face_crop = cv_image[y1:y2, x1:x2]
+                if face_crop.size > 0:
+                    _, buffer = cv2.imencode('.jpg', face_crop)
+                    unresolved_item["faceImageUrl"] = f"data:image/jpeg;base64,{base64.b64encode(buffer).decode('utf-8')}"
+            unresolved.append(unresolved_item)
     
     return {
         "recognized": recognized,

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Face Enrollment | Attendance System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .form-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+        }
+        
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%2394a3b8%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem top 50%;
+            background-size: 0.65rem auto;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-sm);
+            padding: 2rem;
+            text-align: center;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            background: rgba(0,0,0,0.1);
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: var(--accent-primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+        
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-icon {
+            color: var(--accent-primary);
+            margin-bottom: 1rem;
+        }
+        
+        #preview-container {
+            display: none;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        #image-preview {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+        }
+        
+        .alert-success {
+            background: var(--success-bg);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .alert-error {
+            background: var(--error-bg);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        .loader {
+            display: none;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <!-- Animated background -->
+    <div class="bg-gradient"></div>
+    <div class="bg-grid"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <div class="brand-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+            </div>
+            <span class="brand-text">Attendance<span class="brand-accent">API</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">Dashboard</a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <section class="section">
+            <h2 class="section-title" style="text-align: center; display: block;">Admin Face Enrollment</h2>
+            
+            <div class="form-container">
+                <div id="alert-message" class="alert"></div>
+
+                <form id="registrationForm" onsubmit="submitRegistration(event)">
+                    <div class="form-group">
+                        <label class="form-label" for="class_id">Select Class</label>
+                        <select id="class_id" name="class_id" class="form-control" required onchange="loadStudents()">
+                            <option value="" disabled selected>Loading classes...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="student_id">Select Student</label>
+                        <select id="student_id" name="student_id" class="form-control" required disabled>
+                            <option value="" disabled selected>Select a class first...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Selfie Photo</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="image" name="image" accept="image/*" capture="user" required onchange="previewImage(this)">
+                            <div class="file-icon">
+                                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                                    <circle cx="12" cy="13" r="4"/>
+                                </svg>
+                            </div>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem;">Tap to take a selfie or upload a clear frontal photo</p>
+                        </div>
+                        <div id="preview-container">
+                            <img id="image-preview" src="#" alt="Preview">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center;" id="submitBtn">
+                        <span id="submitText">Enroll Face</span>
+                        <div class="loader" id="submitLoader"></div>
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // Fetch classes on load
+        document.addEventListener('DOMContentLoaded', async () => {
+            const classSelect = document.getElementById('class_id');
+            try {
+                const response = await fetch('/api/enrollment/classes');
+                if (!response.ok) throw new Error('Failed to load classes');
+                const data = await response.json();
+                
+                classSelect.innerHTML = '<option value="" disabled selected>Select a class</option>';
+                data.classes.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.id;
+                    option.textContent = `${c.className} - Section ${c.section}`;
+                    classSelect.appendChild(option);
+                });
+            } catch (err) {
+                console.error(err);
+                classSelect.innerHTML = '<option value="" disabled>Error loading classes. Please refresh.</option>';
+            }
+        });
+
+        // Load students for selected class
+        async function loadStudents() {
+            const classSelect = document.getElementById('class_id');
+            const studentSelect = document.getElementById('student_id');
+            const classId = classSelect.value;
+            
+            if (!classId) return;
+            
+            studentSelect.innerHTML = '<option value="" disabled selected>Loading students...</option>';
+            studentSelect.disabled = true;
+            
+            try {
+                const response = await fetch(`/api/enrollment/students/${classId}`);
+                if (!response.ok) throw new Error('Failed to load students');
+                const data = await response.json();
+                
+                if (data.students.length === 0) {
+                    studentSelect.innerHTML = '<option value="" disabled selected>No students in this class</option>';
+                    return;
+                }
+                
+                studentSelect.innerHTML = '<option value="" disabled selected>Select a student</option>';
+                data.students.forEach(s => {
+                    const option = document.createElement('option');
+                    option.value = s.id;
+                    option.textContent = `${s.name} (${s.rollNumber})`;
+                    studentSelect.appendChild(option);
+                });
+                studentSelect.disabled = false;
+            } catch (err) {
+                console.error(err);
+                studentSelect.innerHTML = '<option value="" disabled>Error loading students.</option>';
+            }
+        }
+
+        // Image Preview
+        function previewImage(input) {
+            const previewContainer = document.getElementById('preview-container');
+            const previewImage = document.getElementById('image-preview');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+
+        // Form Submission
+        async function submitRegistration(event) {
+            event.preventDefault();
+            
+            const form = document.getElementById('registrationForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const submitText = document.getElementById('submitText');
+            const submitLoader = document.getElementById('submitLoader');
+            const alertBox = document.getElementById('alert-message');
+            
+            // Set loading state
+            submitBtn.disabled = true;
+            submitText.style.display = 'none';
+            submitLoader.style.display = 'block';
+            alertBox.style.display = 'none';
+            alertBox.className = 'alert';
+            
+            const formData = new FormData(form);
+            
+            try {
+                const response = await fetch('/api/enrollment/admin-enroll-face', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                // Safely parse — the server may return plain text on a crash
+                const rawText = await response.text();
+                let data = {};
+                try {
+                    data = JSON.parse(rawText);
+                } catch (_) {
+                    // Not valid JSON (e.g. "Internal Server Error")
+                    throw new Error(rawText || `Server error (${response.status})`);
+                }
+
+                if (!response.ok) {
+                    let errorMsg = data.detail || 'Registration failed.';
+                    if (typeof data.detail === 'object' && data.detail.message) {
+                        errorMsg = data.detail.message;
+                    }
+                    throw new Error(errorMsg);
+                }
+                
+                // Success
+                alertBox.textContent = 'Face successfully enrolled for the student!';
+                alertBox.classList.add('alert-success');
+                alertBox.style.display = 'block';
+                
+                // Reset form
+                form.reset();
+                document.getElementById('student_id').disabled = true;
+                document.getElementById('student_id').innerHTML = '<option value="" disabled selected>Select a class first...</option>';
+                document.getElementById('preview-container').style.display = 'none';
+                
+            } catch (error) {
+                alertBox.textContent = error.message;
+                alertBox.classList.add('alert-error');
+                alertBox.style.display = 'block';
+            } finally {
+                // Restore button
+                submitBtn.disabled = false;
+                submitText.style.display = 'block';
+                submitLoader.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

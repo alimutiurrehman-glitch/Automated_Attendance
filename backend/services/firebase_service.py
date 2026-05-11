@@ -95,3 +95,35 @@ def register_student_in_db(name, roll_number, class_id, face_embedding):
         raise  # Re-raise duplicate error as-is so the route returns a 400
     except Exception as e:
         raise Exception(f"Failed to register student in DB: {e}")
+
+def get_students_in_class(class_id):
+    """Fetch all students for a specific class."""
+    db = get_db()
+    try:
+        students_ref = db.collection('students').where('classId', '==', class_id)
+        docs = students_ref.stream()
+        students = []
+        for doc in docs:
+            data = doc.to_dict()
+            students.append({
+                "id": doc.id,
+                "name": data.get("name", ""),
+                "rollNumber": data.get("rollNumber", "")
+            })
+        return students
+    except Exception as e:
+        raise Exception(f"Failed to fetch students: {e}")
+
+def update_student_embedding(student_id, new_embedding):
+    """Appends a new face embedding to an existing student."""
+    db = get_db()
+    try:
+        student_ref = db.collection('students').document(student_id)
+        # Store as JSON string as done in register_student_in_db
+        student_ref.update({
+            "faceEmbeddings": firestore.ArrayUnion([json.dumps(new_embedding)])
+        })
+        return True
+    except Exception as e:
+        raise Exception(f"Failed to update student embedding: {e}")
+
